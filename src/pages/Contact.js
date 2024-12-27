@@ -1,21 +1,67 @@
-import React from "react";
+import React, { useState } from "react";
 
 const Contact = () => {
+  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+  const [errors, setErrors] = useState({});
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    setErrors({ ...errors, [name]: "" });
+  };
+
+  const validate = () => {
+    const newErrors = {};
+    if (!formData.name) newErrors.name = "Name is required.";
+    if (!formData.email) newErrors.email = "Email is required.";
+    if (!formData.message) newErrors.message = "Message is required.";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validate()) {
+      alert("Message sent successfully!");
+      setFormData({ name: "", email: "", message: "" });
+    }
+  };
+
   return (
     <div className="contact">
       <h1>Contact Us</h1>
-      <form className="contact-form">
+      <form className="contact-form" onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Name</label>
-          <input type="text" placeholder="Your Name" />
+          <input
+            type="text"
+            name="name"
+            placeholder="Your Name"
+            value={formData.name}
+            onChange={handleChange}
+          />
+          {errors.name && <p className="error">{errors.name}</p>}
         </div>
         <div className="form-group">
           <label>Email</label>
-          <input type="email" placeholder="Your Email" />
+          <input
+            type="email"
+            name="email"
+            placeholder="Your Email"
+            value={formData.email}
+            onChange={handleChange}
+          />
+          {errors.email && <p className="error">{errors.email}</p>}
         </div>
         <div className="form-group">
           <label>Message</label>
-          <textarea placeholder="Your Message"></textarea>
+          <textarea
+            name="message"
+            placeholder="Your Message"
+            value={formData.message}
+            onChange={handleChange}
+          ></textarea>
+          {errors.message && <p className="error">{errors.message}</p>}
         </div>
         <button type="submit" className="btn">Send</button>
       </form>
